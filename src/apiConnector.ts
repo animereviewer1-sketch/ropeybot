@@ -754,14 +754,57 @@ export class API_Connector extends EventEmitter<ConnectorEvents> {
         await this.loggedIn.prom;
         console.log("Logged in.");
 
+        // Enable all mods and settings
+        let settingsChanged = false;
+
         if (this.Player.OnlineSharedSettings.GameVersion !== GAMEVERSION) {
             this.Player.OnlineSharedSettings.GameVersion = GAMEVERSION;
+            settingsChanged = true;
+        }
 
+        // Enable full wardrobe access to allow editing all settings
+        if (!this.Player.OnlineSharedSettings.AllowFullWardrobeAccess) {
+            this.Player.OnlineSharedSettings.AllowFullWardrobeAccess = true;
+            settingsChanged = true;
+        }
+
+        // Enable script permissions to allow mods to function
+        if (
+            this.Player.OnlineSharedSettings.ScriptPermissions.Hide
+                .permission !== 1
+        ) {
+            this.Player.OnlineSharedSettings.ScriptPermissions.Hide.permission = 1;
+            settingsChanged = true;
+        }
+        if (
+            this.Player.OnlineSharedSettings.ScriptPermissions.Block
+                .permission !== 1
+        ) {
+            this.Player.OnlineSharedSettings.ScriptPermissions.Block.permission = 1;
+            settingsChanged = true;
+        }
+
+        // Enable other permissive settings for maximum mod compatibility
+        if (!this.Player.OnlineSharedSettings.AllowPlayerLeashing) {
+            this.Player.OnlineSharedSettings.AllowPlayerLeashing = true;
+            settingsChanged = true;
+        }
+        if (!this.Player.OnlineSharedSettings.AllowRename) {
+            this.Player.OnlineSharedSettings.AllowRename = true;
+            settingsChanged = true;
+        }
+        if (!this.Player.OnlineSharedSettings.ItemsAffectExpressions) {
+            this.Player.OnlineSharedSettings.ItemsAffectExpressions = true;
+            settingsChanged = true;
+        }
+
+        if (settingsChanged) {
+            console.log("Enabling all mods and settings...");
             this.accountUpdate({
                 OnlineSharedSettings: this.Player.OnlineSharedSettings,
             });
         }
-        console.log("Connector started.");
+        console.log("Connector started with all mods and settings enabled.");
     }
 
     public setItemPermission(perm: ItemPermissionLevel): void {
