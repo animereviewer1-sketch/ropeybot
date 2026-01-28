@@ -20,6 +20,66 @@ Usual club ettiquette applies, eg:
   sending messages will affect the server.
 - Make bots fun / interesting / useful, rather than to just sit in rooms.
 
+## Web Dashboard
+
+The bot includes a web-based control panel for easy management and monitoring.
+
+### Features
+
+- **Real-time Dashboard**: Monitor bot status, player count, uptime, and room information
+- **Live Player List**: View all players in the room with admin status indicators
+- **Chat Monitor**: See all chat messages in real-time with type indicators (Chat/Emote/Whisper)
+- **Bot Actions**:
+  - Send messages as the bot (Chat, Emote, or Whisper)
+  - Kick players from the room
+  - Ban players
+- **Configuration Management**:
+  - Edit superusers and members lists
+  - Modify room settings (name, description, privacy, player limit)
+  - View and manage ban list
+  - Save changes to config.json without restarting
+
+### Enabling the Web Dashboard
+
+Add the following section to your `config.json`:
+
+```json
+{
+  "webDashboard": {
+    "enabled": true,
+    "port": 3000,
+    "password": "",
+    "allowedIPs": ["127.0.0.1", "localhost"]
+  }
+}
+```
+
+**Configuration Options:**
+
+- `enabled`: Set to `true` to enable the web dashboard (default: false)
+- `port`: Port number for the web server (default: 3000)
+- `password`: Optional password for authentication (leave empty for no password)
+- `allowedIPs`: Array of allowed IP addresses (default: localhost only)
+
+### Accessing the Dashboard
+
+Once the bot is running with the web dashboard enabled, open your browser and navigate to:
+
+```
+http://localhost:3000
+```
+
+Replace `3000` with your configured port if different.
+
+### Security Considerations
+
+**Important**: The web dashboard provides full control over your bot. Please consider:
+
+1. **Use Password Protection**: Set a strong password in the config to prevent unauthorized access
+2. **Restrict IPs**: Keep the `allowedIPs` list limited to trusted IPs (default is localhost only)
+3. **Firewall**: If running on a server, ensure the port is not exposed to the internet unless necessary
+4. **HTTPS**: For production use, consider putting the dashboard behind a reverse proxy with HTTPS
+
 ## Code layout
 
 Anything in src/hub is from the original bot hub. This includes the 'kidnappers' game and the
