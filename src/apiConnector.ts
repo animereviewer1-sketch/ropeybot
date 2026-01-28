@@ -33,6 +33,7 @@ import { BC_Server_ChatRoomMessage } from "./logicEvent.ts";
 import { SocketWrapper } from "./socketWrapper.ts";
 import { wait } from "./util/wait.ts";
 import { API_PlayerCharacter } from "./playerCharacter.ts";
+import { BotSettings } from "./botSettings.ts";
 
 export enum LeaveReason {
     DISCONNECT = "ServerDisconnect",
@@ -135,14 +136,17 @@ export class API_Connector extends EventEmitter<ConnectorEvents> {
     private leaveReasons = new Map<number, LeaveReason>();
 
     private bot?: LogicBase;
+    private settings?: BotSettings;
 
     constructor(
         private url: string,
         public username: string,
         private password: string,
         env: "live" | "test",
+        settings?: BotSettings,
     ) {
         super();
+        this.settings = settings;
 
         const origin =
             env === "live"
@@ -754,7 +758,18 @@ export class API_Connector extends EventEmitter<ConnectorEvents> {
         await this.loggedIn.prom;
         console.log("Logged in.");
 
-        // Enable all mods and settings
+        // Use configured settings or enable all by default
+        const settings = this.settings ?? {
+            enableAllMods: true,
+            allowFullWardrobeAccess: true,
+            enableScriptPermissions: true,
+            allowPlayerLeashing: true,
+            allowRename: true,
+            itemsAffectExpressions: true,
+            blockBodyCosplay: false,
+            disablePickingLocksOnSelf: false,
+        };
+
         let settingsChanged = false;
 
         if (this.Player.OnlineSharedSettings.GameVersion !== GAMEVERSION) {
@@ -762,49 +777,116 @@ export class API_Connector extends EventEmitter<ConnectorEvents> {
             settingsChanged = true;
         }
 
-        // Enable full wardrobe access to allow editing all settings
-        if (!this.Player.OnlineSharedSettings.AllowFullWardrobeAccess) {
-            this.Player.OnlineSharedSettings.AllowFullWardrobeAccess = true;
-            settingsChanged = true;
+        // Apply configured settings
+        if (settings.allowFullWardrobeAccess !== undefined) {
+            const targetValue = settings.allowFullWardrobeAccess;
+            if (
+                this.Player.OnlineSharedSettings.AllowFullWardrobeAccess !==
+                targetValue
+            ) {
+                this.Player.OnlineSharedSettings.AllowFullWardrobeAccess =
+                    targetValue;
+                settingsChanged = true;
+            }
         }
 
-        // Enable script permissions to allow mods to function
-        if (
-            this.Player.OnlineSharedSettings.ScriptPermissions.Hide
-                .permission !== 1
-        ) {
-            this.Player.OnlineSharedSettings.ScriptPermissions.Hide.permission = 1;
-            settingsChanged = true;
-        }
-        if (
-            this.Player.OnlineSharedSettings.ScriptPermissions.Block
-                .permission !== 1
-        ) {
-            this.Player.OnlineSharedSettings.ScriptPermissions.Block.permission = 1;
-            settingsChanged = true;
+        // Enable script permissions if enableAllMods or enableScriptPermissions is true
+        const enableScripts =
+            settings.enableAllMods || settings.enableScriptPermissions;
+        if (enableScripts !== undefined && enableScripts) {
+            if (
+                this.Player.OnlineSharedSettings.ScriptPermissions.Hide
+                    .permission !== 1
+            ) {
+                this.Player.OnlineSharedSettings.ScriptPermissions.Hide.permission = 1;
+                settingsChanged = true;
+            }
+            if (
+                this.Player.OnlineSharedSettings.ScriptPermissions.Block
+                    .permission !== 1
+            ) {
+                this.Player.OnlineSharedSettings.ScriptPermissions.Block.permission = 1;
+                settingsChanged = true;
+            }
+        } else if (enableScripts === false) {
+            if (
+                this.Player.OnlineSharedSettings.ScriptPermissions.Hide
+                    .permission !== 0
+            ) {
+                this.Player.OnlineSharedSettings.ScriptPermissions.Hide.permission = 0;
+                settingsChanged = true;
+            }
+            if (
+                this.Player.OnlineSharedSettings.ScriptPermissions.Block
+                    .permission !== 0
+            ) {
+                this.Player.OnlineSharedSettings.ScriptPermissions.Block.permission = 0;
+                settingsChanged = true;
+            }
         }
 
-        // Enable other permissive settings for maximum mod compatibility
-        if (!this.Player.OnlineSharedSettings.AllowPlayerLeashing) {
-            this.Player.OnlineSharedSettings.AllowPlayerLeashing = true;
-            settingsChanged = true;
+        if (settings.allowPlayerLeashing !== undefined) {
+            const targetValue = settings.allowPlayerLeashing;
+            if (
+                this.Player.OnlineSharedSettings.AllowPlayerLeashing !==
+                targetValue
+            ) {
+                this.Player.OnlineSharedSettings.AllowPlayerLeashing =
+                    targetValue;
+                settingsChanged = true;
+            }
         }
-        if (!this.Player.OnlineSharedSettings.AllowRename) {
-            this.Player.OnlineSharedSettings.AllowRename = true;
-            settingsChanged = true;
+
+        if (settings.allowRename !== undefined) {
+            const targetValue = settings.allowRename;
+            if (this.Player.OnlineSharedSettings.AllowRename !== targetValue) {
+                this.Player.OnlineSharedSettings.AllowRename = targetValue;
+                settingsChanged = true;
+            }
         }
-        if (!this.Player.OnlineSharedSettings.ItemsAffectExpressions) {
-            this.Player.OnlineSharedSettings.ItemsAffectExpressions = true;
-            settingsChanged = true;
+
+        if (settings.itemsAffectExpressions !== undefined) {
+            const targetValue = settings.itemsAffectExpressions;
+            if (
+                this.Player.OnlineSharedSettings.ItemsAffectExpressions !==
+                targetValue
+            ) {
+                this.Player.OnlineSharedSettings.ItemsAffectExpressions =
+                    targetValue;
+                settingsChanged = true;
+            }
+        }
+
+        if (settings.blockBodyCosplay !== undefined) {
+            const targetValue = settings.blockBodyCosplay;
+            if (
+                this.Player.OnlineSharedSettings.BlockBodyCosplay !==
+                targetValue
+            ) {
+                this.Player.OnlineSharedSettings.BlockBodyCosplay = targetValue;
+                settingsChanged = true;
+            }
+        }
+
+        if (settings.disablePickingLocksOnSelf !== undefined) {
+            const targetValue = settings.disablePickingLocksOnSelf;
+            if (
+                this.Player.OnlineSharedSettings.DisablePickingLocksOnSelf !==
+                targetValue
+            ) {
+                this.Player.OnlineSharedSettings.DisablePickingLocksOnSelf =
+                    targetValue;
+                settingsChanged = true;
+            }
         }
 
         if (settingsChanged) {
-            console.log("Enabling all mods and settings...");
+            console.log("Applying configured bot settings...");
             this.accountUpdate({
                 OnlineSharedSettings: this.Player.OnlineSharedSettings,
             });
         }
-        console.log("Connector started with all mods and settings enabled.");
+        console.log("Connector started with configured settings.");
     }
 
     public setItemPermission(perm: ItemPermissionLevel): void {

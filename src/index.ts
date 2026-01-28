@@ -5,6 +5,7 @@ export * from "./apiConnector.ts";
 export * from "./apiMap.ts";
 export * from "./appearance.ts";
 export * from "./assetHelpers.ts";
+export * from "./botSettings.ts";
 export * from "./commandParser.ts";
 export * from "./item.ts";
 export * from "./jmod.ts";

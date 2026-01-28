@@ -22,6 +22,10 @@ import { Db, MongoClient } from "mongodb";
 import { PetSpa } from "./games/petspa";
 import { MaidsPartyNightSinglePlayerAdventure } from "./hub/logic/maidsPartyNightSinglePlayerAdventure";
 import { Casino } from "./games/casino";
+import {
+    promptForSettingsInterface,
+    runSettingsInterface,
+} from "./settingsInterface";
 
 const SERVER_URL = {
     live: "https://bondage-club-server.herokuapp.com/",
@@ -47,6 +51,12 @@ export async function startBot(): Promise<RopeyBot> {
     });
 
     const cfgFile = process.argv[2] ?? "./config.json";
+
+    // Check if user wants to configure settings interactively
+    const shouldConfigure = await promptForSettingsInterface();
+    if (shouldConfigure) {
+        await runSettingsInterface(cfgFile);
+    }
 
     const configString = await readFile(cfgFile, "utf-8");
     const config = JSON.parse(configString) as ConfigFile;
@@ -77,6 +87,7 @@ export async function startBot(): Promise<RopeyBot> {
         config.user,
         config.password,
         config.env,
+        config.botSettings,
     );
     await connector.joinOrCreateRoom(config.room);
 
