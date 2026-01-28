@@ -12,24 +12,13 @@
  * limitations under the License.
  */
 
-import { type RoomDefinition, type BotSettings } from "bc-bot";
-import { type CasinoConfig } from "./games/casino";
-
-export interface ConfigFile {
-    user: string;
-    password: string;
-    env: "live" | "test";
-    url?: string;
-    game: string;
-    superusers: number[];
-    room: RoomDefinition;
-    mongo_uri?: string;
-    mongo_db?: string;
-    members: number[];
-
-    user2: string;
-    password2: string;
-
-    casino?: CasinoConfig;
-    botSettings?: BotSettings;
+export interface BotSettings {
+    enableAllMods?: boolean;
+    allowFullWardrobeAccess?: boolean;
+    enableScriptPermissions?: boolean;
+    allowPlayerLeashing?: boolean;
+    allowRename?: boolean;
+    itemsAffectExpressions?: boolean;
+    blockBodyCosplay?: boolean;
+    disablePickingLocksOnSelf?: boolean;
 }

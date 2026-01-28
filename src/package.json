@@ -14,7 +14,7 @@
         "dist/**"
     ],
     "scripts": {
-        "prepare": "pnpm compile",
+        "prepare": "npm run compile",
         "compile": "rm -rf dist/* && tsc -p tsconfig.json"
     },
     "dependencies": {

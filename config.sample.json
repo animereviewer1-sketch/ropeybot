@@ -18,5 +18,15 @@
         "Game": "",
         "Language": "EN",
         "Admin": []
+    },
+    "botSettings": {
+        "enableAllMods": true,
+        "allowFullWardrobeAccess": true,
+        "enableScriptPermissions": true,
+        "allowPlayerLeashing": true,
+        "allowRename": true,
+        "itemsAffectExpressions": true,
+        "blockBodyCosplay": false,
+        "disablePickingLocksOnSelf": false
     }
 }
