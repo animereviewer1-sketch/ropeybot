@@ -18,5 +18,11 @@
         "Game": "",
         "Language": "EN",
         "Admin": []
+    },
+    "webDashboard": {
+        "enabled": true,
+        "port": 3000,
+        "password": "",
+        "allowedIPs": ["127.0.0.1", "localhost"]
     }
 }

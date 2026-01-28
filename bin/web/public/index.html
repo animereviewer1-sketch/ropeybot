@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 Ropeybot Control Panel</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 Ropeybot Control Panel</h1>
+            <div class="connection-status" id="connectionStatus">
+                <span class="status-indicator" id="statusIndicator"></span>
+                <span id="statusText">Connecting...</span>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <nav class="sidebar">
+                <button class="nav-btn active" data-tab="dashboard">📊 Dashboard</button>
+                <button class="nav-btn" data-tab="players">👥 Players</button>
+                <button class="nav-btn" data-tab="chat">💬 Chat</button>
+                <button class="nav-btn" data-tab="actions">🔨 Actions</button>
+                <button class="nav-btn" data-tab="config">⚙️ Config</button>
+            </nav>
+
+            <main class="content">
+                <!-- Dashboard Tab -->
+                <div class="tab-content active" id="dashboard">
+                    <h2>Dashboard</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">Status</div>
+                            <div class="stat-value" id="botStatus">-</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Game</div>
+                            <div class="stat-value" id="gameName">-</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Players</div>
+                            <div class="stat-value" id="playerCount">0/10</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Uptime</div>
+                            <div class="stat-value" id="uptime">-</div>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Room Information</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Room Name:</span>
+                                <span id="roomName">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Description:</span>
+                                <span id="roomDescription">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Privacy:</span>
+                                <span id="roomPrivacy">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="activity-card">
+                        <h3>Recent Activity</h3>
+                        <div id="recentActivity" class="activity-list"></div>
+                    </div>
+                </div>
+
+                <!-- Players Tab -->
+                <div class="tab-content" id="players">
+                    <h2>Players in Room</h2>
+                    <div class="player-list" id="playerList"></div>
+                </div>
+
+                <!-- Chat Tab -->
+                <div class="tab-content" id="chat">
+                    <h2>Chat Messages</h2>
+                    <div class="chat-container">
+                        <div class="chat-messages" id="chatMessages"></div>
+                    </div>
+                </div>
+
+                <!-- Actions Tab -->
+                <div class="tab-content" id="actions">
+                    <h2>Bot Actions</h2>
+                    
+                    <div class="action-card">
+                        <h3>Send Message</h3>
+                        <div class="form-group">
+                            <label>Message Type:</label>
+                            <select id="messageType">
+                                <option value="Chat">Chat</option>
+                                <option value="Emote">Emote</option>
+                                <option value="Whisper">Whisper</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="targetGroup" style="display: none;">
+                            <label>Target Player:</label>
+                            <select id="targetPlayer"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Message:</label>
+                            <textarea id="messageContent" rows="3" placeholder="Enter message..."></textarea>
+                        </div>
+                        <button class="btn btn-primary" onclick="sendMessage()">Send Message</button>
+                    </div>
+
+                    <div class="action-card">
+                        <h3>Player Actions</h3>
+                        <div class="form-group">
+                            <label>Select Player:</label>
+                            <select id="actionPlayer"></select>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-warning" onclick="kickPlayer()">Kick Player</button>
+                            <button class="btn btn-danger" onclick="banPlayer()">Ban Player</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Config Tab -->
+                <div class="tab-content" id="config">
+                    <h2>Configuration</h2>
+                    
+                    <div class="config-card">
+                        <h3>Superusers</h3>
+                        <div class="form-group">
+                            <label>Member Numbers (comma-separated):</label>
+                            <input type="text" id="superusers" placeholder="12345, 67890">
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3>Members</h3>
+                        <div class="form-group">
+                            <label>Member Numbers (comma-separated):</label>
+                            <input type="text" id="members" placeholder="12345, 67890">
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3>Room Settings</h3>
+                        <div class="form-group">
+                            <label>Room Name:</label>
+                            <input type="text" id="configRoomName" placeholder="Room Name">
+                        </div>
+                        <div class="form-group">
+                            <label>Room Description:</label>
+                            <textarea id="configRoomDescription" rows="2"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="configRoomPrivate">
+                                Private Room
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>Room Limit:</label>
+                            <input type="number" id="configRoomLimit" min="1" max="100" value="10">
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3>Ban List</h3>
+                        <div id="banList" class="ban-list"></div>
+                    </div>
+
+                    <button class="btn btn-primary btn-large" onclick="saveConfig()">Save Configuration</button>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

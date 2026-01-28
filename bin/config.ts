@@ -15,6 +15,13 @@
 import { type RoomDefinition } from "bc-bot";
 import { type CasinoConfig } from "./games/casino";
 
+export interface WebDashboardConfig {
+    enabled: boolean;
+    port: number;
+    password?: string;
+    allowedIPs?: string[];
+}
+
 export interface ConfigFile {
     user: string;
     password: string;
@@ -31,4 +38,5 @@ export interface ConfigFile {
     password2: string;
 
     casino?: CasinoConfig;
+    webDashboard?: WebDashboardConfig;
 }

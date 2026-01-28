@@ -145,11 +145,24 @@ export async function startBot(): Promise<RopeyBot> {
 }
 
 async function main() {
-    const { game } = await startBot();
+    const bot = await startBot();
 
-    if (!game) {
+    if (!bot.game) {
         console.error("No game specified!");
         process.exit(1);
+    }
+
+    // Start web dashboard if enabled
+    if (bot.config.webDashboard?.enabled) {
+        const { startWebServer } = await import("./web/server.js");
+        try {
+            await startWebServer(bot, bot.config.webDashboard);
+        } catch (error) {
+            console.error("Failed to start web dashboard:", error);
+            console.error(
+                "Bot will continue running without web dashboard.",
+            );
+        }
     }
 }
 
