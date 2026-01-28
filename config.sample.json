@@ -3,7 +3,9 @@
     "password": "your_bot_password",
     "env": "live",
     "game": "dare",
+    "_comment_superusers": "Member numbers of users who can use admin commands like !su say, !su kick, !su ban. Find your member number in your BC profile URL (bondageprojects.elementfx.com/R???/InformationSheet.html?MemberNumber=YOUR_NUMBER_HERE)",
     "superusers": [],
+    "_comment_members": "Member numbers allowed to use certain game-specific features. Usage depends on the game being run.",
     "members": [],
     "room": {
         "Name": "Your room name",
@@ -17,6 +19,7 @@
         "BlockCategory": [],
         "Game": "",
         "Language": "EN",
+        "_comment_Admin": "Member numbers of room administrators. These users will have admin privileges in the BC room.",
         "Admin": []
     }
 }
