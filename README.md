@@ -30,14 +30,14 @@ The bot includes a web-based control panel for easy management and monitoring.
 - **Live Player List**: View all players in the room with admin status indicators
 - **Chat Monitor**: See all chat messages in real-time with type indicators (Chat/Emote/Whisper)
 - **Bot Actions**:
-  - Send messages as the bot (Chat, Emote, or Whisper)
-  - Kick players from the room
-  - Ban players
+    - Send messages as the bot (Chat, Emote, or Whisper)
+    - Kick players from the room
+    - Ban players
 - **Configuration Management**:
-  - Edit superusers and members lists
-  - Modify room settings (name, description, privacy, player limit)
-  - View and manage ban list
-  - Save changes to config.json without restarting
+    - Edit superusers and members lists
+    - Modify room settings (name, description, privacy, player limit)
+    - View and manage ban list
+    - Save changes to config.json without restarting
 
 ### Enabling the Web Dashboard
 
@@ -45,12 +45,12 @@ Add the following section to your `config.json`:
 
 ```json
 {
-  "webDashboard": {
-    "enabled": true,
-    "port": 3000,
-    "password": "",
-    "allowedIPs": ["127.0.0.1", "localhost"]
-  }
+    "webDashboard": {
+        "enabled": true,
+        "port": 3000,
+        "password": "",
+        "allowedIPs": ["127.0.0.1", "localhost"]
+    }
 }
 ```
 
@@ -76,8 +76,8 @@ Replace `3000` with your configured port if different.
 **Important**: The web dashboard provides full control over your bot. Please consider:
 
 1. **Use Password Protection**: Set a strong password in the config to prevent unauthorized access
-   - Note: Password authentication uses a simple bearer token approach and is transmitted in the Authorization header
-   - For production use, always use HTTPS to encrypt credentials in transit
+    - Note: Password authentication uses a simple bearer token approach and is transmitted in the Authorization header
+    - For production use, always use HTTPS to encrypt credentials in transit
 2. **Restrict IPs**: Keep the `allowedIPs` list limited to trusted IPs (default is localhost only)
 3. **Firewall**: If running on a server, ensure the port is not exposed to the internet unless necessary
 4. **HTTPS**: For production use, put the dashboard behind a reverse proxy (nginx, Apache) with HTTPS

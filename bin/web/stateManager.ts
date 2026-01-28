@@ -75,7 +75,10 @@ export class StateManager extends EventEmitter {
         });
     }
 
-    private addChatMessage(sender: API_Character, message: BC_Server_ChatRoomMessage) {
+    private addChatMessage(
+        sender: API_Character,
+        message: BC_Server_ChatRoomMessage,
+    ) {
         const chatMsg: ChatMessage = {
             id: `${Date.now()}-${sender.MemberNumber}`,
             timestamp: Date.now(),
@@ -122,7 +125,9 @@ export class StateManager extends EventEmitter {
             connected: connector.isConnected(),
             game: this.bot.game ?? "none",
             roomName: chatRoom?.Name ?? "Not in room",
-            roomDescription: chatRoom ? (chatRoom as any).data?.Description ?? "" : "",
+            roomDescription: chatRoom
+                ? ((chatRoom as any).data?.Description ?? "")
+                : "",
             roomPrivate: chatRoom?.Private ?? false,
             roomLimit: chatRoom?.Limit ?? 10,
             playerCount: chatRoom?.characters.length ?? 0,

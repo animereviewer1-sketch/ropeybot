@@ -159,9 +159,7 @@ async function main() {
             await startWebServer(bot, bot.config.webDashboard);
         } catch (error) {
             console.error("Failed to start web dashboard:", error);
-            console.error(
-                "Bot will continue running without web dashboard.",
-            );
+            console.error("Bot will continue running without web dashboard.");
         }
     }
 }

@@ -58,15 +58,21 @@ export async function startWebServer(
     if (config.allowedIPs && config.allowedIPs.length > 0) {
         app.use((req, res, next) => {
             const clientIP =
-                (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() ||
+                (req.headers["x-forwarded-for"] as string)
+                    ?.split(",")[0]
+                    ?.trim() ||
                 req.socket.remoteAddress ||
                 "";
-            
+
             // Check if client IP matches any allowed IP
             const isAllowed = config.allowedIPs!.some((allowedIP) => {
                 // Handle localhost variations
-                if ((allowedIP === "localhost" || allowedIP === "127.0.0.1") &&
-                    (clientIP.includes("127.0.0.1") || clientIP.includes("::1") || clientIP.includes("localhost"))) {
+                if (
+                    (allowedIP === "localhost" || allowedIP === "127.0.0.1") &&
+                    (clientIP.includes("127.0.0.1") ||
+                        clientIP.includes("::1") ||
+                        clientIP.includes("localhost"))
+                ) {
                     return true;
                 }
                 // Direct IP match

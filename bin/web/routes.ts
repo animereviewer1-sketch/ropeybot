@@ -17,7 +17,10 @@ import { RopeyBot } from "../main";
 import { StateManager } from "./stateManager";
 import { writeFile } from "fs/promises";
 
-export function createRoutes(bot: RopeyBot, stateManager: StateManager): Router {
+export function createRoutes(
+    bot: RopeyBot,
+    stateManager: StateManager,
+): Router {
     const router = Router();
 
     // Get bot and room status
@@ -46,11 +49,15 @@ export function createRoutes(bot: RopeyBot, stateManager: StateManager): Router 
             const { type, content, target } = req.body;
 
             if (!content || !type) {
-                return res.status(400).json({ error: "Missing type or content" });
+                return res
+                    .status(400)
+                    .json({ error: "Missing type or content" });
             }
 
             if (type === "Whisper" && !target) {
-                return res.status(400).json({ error: "Target required for whisper" });
+                return res
+                    .status(400)
+                    .json({ error: "Target required for whisper" });
             }
 
             bot.connector.SendMessage(type, content, target);
@@ -135,20 +142,40 @@ export function createRoutes(bot: RopeyBot, stateManager: StateManager): Router 
             }
             if (room !== undefined) {
                 // Validate room settings
-                if (room.Name && typeof room.Name === "string" && room.Name.length > 100) {
-                    return res.status(400).json({ error: "Room name too long (max 100 characters)" });
+                if (
+                    room.Name &&
+                    typeof room.Name === "string" &&
+                    room.Name.length > 100
+                ) {
+                    return res
+                        .status(400)
+                        .json({
+                            error: "Room name too long (max 100 characters)",
+                        });
                 }
-                if (room.Description && typeof room.Description === "string" && room.Description.length > 500) {
-                    return res.status(400).json({ error: "Room description too long (max 500 characters)" });
+                if (
+                    room.Description &&
+                    typeof room.Description === "string" &&
+                    room.Description.length > 500
+                ) {
+                    return res
+                        .status(400)
+                        .json({
+                            error: "Room description too long (max 500 characters)",
+                        });
                 }
                 if (room.Limit !== undefined) {
                     const limit = parseInt(room.Limit);
                     if (isNaN(limit) || limit < 1 || limit > 100) {
-                        return res.status(400).json({ error: "Room limit must be between 1 and 100" });
+                        return res
+                            .status(400)
+                            .json({
+                                error: "Room limit must be between 1 and 100",
+                            });
                     }
                     room.Limit = limit;
                 }
-                
+
                 // Update room settings
                 Object.assign(bot.config.room, room);
                 bot.connector.ChatRoomUpdate(room);
@@ -156,7 +183,11 @@ export function createRoutes(bot: RopeyBot, stateManager: StateManager): Router 
 
             // Save to config.json
             const cfgFile = process.argv[2] ?? "./config.json";
-            await writeFile(cfgFile, JSON.stringify(bot.config, null, 4), "utf-8");
+            await writeFile(
+                cfgFile,
+                JSON.stringify(bot.config, null, 4),
+                "utf-8",
+            );
 
             res.json({ success: true });
         } catch (error) {
