@@ -60,6 +60,71 @@ The bot can either be run locally or via the Docker image.
 - And then run said container with the config file mapped in
   `docker run --rm -it -v ${PWD}/config.json:/bot/cfg/config.json ropeybot`
 
+## Bot Settings & Mod Support
+
+The bot now supports configurable settings for mods and in-game features. When you start the bot,
+you'll be prompted with an interactive menu to configure these settings.
+
+### Interactive Settings Menu
+
+When starting the bot, you'll see:
+
+```
+Would you like to configure bot settings? (y/N):
+```
+
+Type `y` to enter the settings configuration menu, where you can:
+
+- Enable/disable mod support (script permissions)
+- Configure wardrobe access permissions
+- Set various in-game behavior options
+
+### Configuration Options
+
+The following settings can be configured:
+
+1. **Enable All Mods** - Enables all mod/addon functionality (automatically enables script permissions)
+2. **Allow Full Wardrobe Access** - Allows other players to edit all wardrobe settings
+3. **Enable Script Permissions** - Allows scripts/mods to hide and block items (required for mods like FUSAM)
+4. **Allow Player Leashing** - Permits other players to leash your bot
+5. **Allow Rename** - Allows name/nickname changes
+6. **Items Affect Expressions** - Allows items to modify facial expressions
+7. **Block Body Cosplay** - Prevents body cosplay assets from being removed
+8. **Disable Picking Locks On Self** - Prevents self-lock picking
+
+### Using the Settings Menu
+
+1. Start the bot with `pnpm start`
+2. When prompted, type `y` to configure settings
+3. Use numbers 1-8 to toggle individual settings
+4. Type `s` or `save` to save and start the bot
+5. Type `q` or `quit` to exit without saving
+
+### Configuring Settings in config.json
+
+You can also configure settings directly in your `config.json` file by adding a `botSettings` section:
+
+```json
+{
+    "user": "your_bot_user_name",
+    "password": "your_bot_password",
+    "env": "live",
+    "game": "dare",
+    "botSettings": {
+        "enableAllMods": true,
+        "allowFullWardrobeAccess": true,
+        "enableScriptPermissions": true,
+        "allowPlayerLeashing": true,
+        "allowRename": true,
+        "itemsAffectExpressions": true,
+        "blockBodyCosplay": false,
+        "disablePickingLocksOnSelf": false
+    }
+}
+```
+
+See `config.sample.json` for a complete example with default values.
+
 ## Games
 
 The bot comes with some built games. In brackets is the value to use for 'game' in the config
