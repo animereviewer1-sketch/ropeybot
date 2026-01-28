@@ -37,21 +37,18 @@ export async function startWebServer(
     const server = createServer(app);
 
     // Middleware
-    app.use(cors());
+    app.use(cors({ origin: [`http://localhost:${config.port}`] }));
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
 
     // Optional password authentication middleware
     if (config.password) {
         app.use((req, res, next) => {
-            // Skip auth for static files
-            if (req.path.startsWith("/api") || req.path === "/ws") {
-                const authHeader = req.headers.authorization;
-                const providedPassword = authHeader?.split(" ")[1];
+            const authHeader = req.headers.authorization;
+            const providedPassword = authHeader?.split(" ")[1];
 
-                if (providedPassword !== config.password) {
-                    return res.status(401).json({ error: "Unauthorized" });
-                }
+            if (providedPassword !== config.password) {
+                return res.status(401).json({ error: "Unauthorized" });
             }
             next();
         });
@@ -61,17 +58,22 @@ export async function startWebServer(
     if (config.allowedIPs && config.allowedIPs.length > 0) {
         app.use((req, res, next) => {
             const clientIP =
-                (req.headers["x-forwarded-for"] as string)?.split(",")[0] ||
+                (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() ||
                 req.socket.remoteAddress ||
                 "";
-            const isAllowed = config.allowedIPs!.some(
-                (allowedIP) =>
-                    clientIP.includes(allowedIP) ||
-                    allowedIP === "localhost" ||
-                    allowedIP === "127.0.0.1",
-            );
+            
+            // Check if client IP matches any allowed IP
+            const isAllowed = config.allowedIPs!.some((allowedIP) => {
+                // Handle localhost variations
+                if ((allowedIP === "localhost" || allowedIP === "127.0.0.1") &&
+                    (clientIP.includes("127.0.0.1") || clientIP.includes("::1") || clientIP.includes("localhost"))) {
+                    return true;
+                }
+                // Direct IP match
+                return clientIP.includes(allowedIP);
+            });
 
-            if (!isAllowed && !req.path.startsWith("/api")) {
+            if (!isAllowed) {
                 return res.status(403).json({ error: "Forbidden" });
             }
             next();
@@ -87,8 +89,11 @@ export async function startWebServer(
     // Serve static files
     app.use(express.static(path.join(__dirname, "public")));
 
-    // Catch-all route to serve index.html for SPA
-    app.get("*", (req, res) => {
+    // Catch-all route to serve index.html for SPA (only for non-API routes)
+    app.get("*", (req, res, next) => {
+        if (req.path.startsWith("/api")) {
+            return next();
+        }
         res.sendFile(path.join(__dirname, "public", "index.html"));
     });
 

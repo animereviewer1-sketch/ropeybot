@@ -56,6 +56,7 @@ export function createRoutes(bot: RopeyBot, stateManager: StateManager): Router 
             bot.connector.SendMessage(type, content, target);
             res.json({ success: true });
         } catch (error) {
+            console.error("Failed to send message:", error);
             res.status(500).json({ error: "Failed to send message" });
         }
     });
@@ -76,6 +77,7 @@ export function createRoutes(bot: RopeyBot, stateManager: StateManager): Router 
 
             res.json({ success: true });
         } catch (error) {
+            console.error("Failed to kick player:", error);
             res.status(500).json({ error: "Failed to kick player" });
         }
     });
@@ -104,6 +106,7 @@ export function createRoutes(bot: RopeyBot, stateManager: StateManager): Router 
 
             res.json({ success: true });
         } catch (error) {
+            console.error("Failed to ban player:", error);
             res.status(500).json({ error: "Failed to ban player" });
         }
     });
@@ -131,6 +134,21 @@ export function createRoutes(bot: RopeyBot, stateManager: StateManager): Router 
                 bot.config.members = members;
             }
             if (room !== undefined) {
+                // Validate room settings
+                if (room.Name && typeof room.Name === "string" && room.Name.length > 100) {
+                    return res.status(400).json({ error: "Room name too long (max 100 characters)" });
+                }
+                if (room.Description && typeof room.Description === "string" && room.Description.length > 500) {
+                    return res.status(400).json({ error: "Room description too long (max 500 characters)" });
+                }
+                if (room.Limit !== undefined) {
+                    const limit = parseInt(room.Limit);
+                    if (isNaN(limit) || limit < 1 || limit > 100) {
+                        return res.status(400).json({ error: "Room limit must be between 1 and 100" });
+                    }
+                    room.Limit = limit;
+                }
+                
                 // Update room settings
                 Object.assign(bot.config.room, room);
                 bot.connector.ChatRoomUpdate(room);

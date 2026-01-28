@@ -76,9 +76,12 @@ Replace `3000` with your configured port if different.
 **Important**: The web dashboard provides full control over your bot. Please consider:
 
 1. **Use Password Protection**: Set a strong password in the config to prevent unauthorized access
+   - Note: Password authentication uses a simple bearer token approach and is transmitted in the Authorization header
+   - For production use, always use HTTPS to encrypt credentials in transit
 2. **Restrict IPs**: Keep the `allowedIPs` list limited to trusted IPs (default is localhost only)
 3. **Firewall**: If running on a server, ensure the port is not exposed to the internet unless necessary
-4. **HTTPS**: For production use, consider putting the dashboard behind a reverse proxy with HTTPS
+4. **HTTPS**: For production use, put the dashboard behind a reverse proxy (nginx, Apache) with HTTPS
+5. **Access Control**: The dashboard has full bot control capabilities - only allow access to trusted users
 
 ## Code layout
 

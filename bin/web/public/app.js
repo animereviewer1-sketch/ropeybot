@@ -47,7 +47,9 @@ function handleWebSocketMessage(message) {
             break;
         case 'newMessage':
             addChatMessage(message.data);
-            addActivity(`Message: ${message.data.content.substring(0, 50)}...`);
+            const content = message.data.content;
+            const truncated = content.length > 50 ? content.substring(0, 50) + '...' : content;
+            addActivity(`Message: ${truncated}`);
             break;
         case 'playerJoined':
             addActivity(`Player joined: ${message.data.name}`);

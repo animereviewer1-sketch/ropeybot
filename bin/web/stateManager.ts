@@ -120,12 +120,12 @@ export class StateManager extends EventEmitter {
 
         return {
             connected: connector.isConnected(),
-            game: this.bot.game || "none",
-            roomName: chatRoom?.Name || "Not in room",
-            roomDescription: chatRoom ? (chatRoom as any).data?.Description || "" : "",
-            roomPrivate: chatRoom?.Private || false,
-            roomLimit: chatRoom?.Limit || 10,
-            playerCount: chatRoom?.characters.length || 0,
+            game: this.bot.game ?? "none",
+            roomName: chatRoom?.Name ?? "Not in room",
+            roomDescription: chatRoom ? (chatRoom as any).data?.Description ?? "" : "",
+            roomPrivate: chatRoom?.Private ?? false,
+            roomLimit: chatRoom?.Limit ?? 10,
+            playerCount: chatRoom?.characters.length ?? 0,
             uptime: Date.now() - this.startTime,
             startTime: this.startTime,
         };

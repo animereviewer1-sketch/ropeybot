@@ -70,12 +70,16 @@ export function setupWebSocket(
         // Send periodic status updates
         const statusInterval = setInterval(() => {
             if (ws.readyState === WebSocket.OPEN) {
-                ws.send(
-                    JSON.stringify({
-                        type: "status",
-                        data: stateManager.getBotStatus(),
-                    }),
-                );
+                try {
+                    ws.send(
+                        JSON.stringify({
+                            type: "status",
+                            data: stateManager.getBotStatus(),
+                        }),
+                    );
+                } catch (error) {
+                    console.error("Failed to send status update:", error);
+                }
             }
         }, 5000);
 
